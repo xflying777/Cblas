@@ -1,13 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <time.h>
 #include "cblas.h"
 
 void initial(double *A, double *B, int N);
 double error(double *x, double *y, int N);
 void matrix_multiplication(double *A, double *B, double *C, int N);
 void dgemm_row(double *A, double *B, double *C, int N);
-void dgemm_col(double *A, double *B, double *C, int N);
+//void dgemm_col(double *A, double *B, double *C, int N);
 
 int main()
 {
@@ -18,6 +19,7 @@ int main()
 	printf(" N = %d \n\n", N);
 
 	double *A, *B, *C1, *C2, *exact;
+	double t1, t2, T1, T2;
 
 	A = (double *) malloc(N*N*sizeof(double));
 	B = (double *) malloc(N*N*sizeof(double));
@@ -27,15 +29,24 @@ int main()
 
 	initial(A, B, N);
 
+	t1 = clock();
 	matrix_multiplication(A, B, exact, N);
+	t2 = clock();
+	T1 = 1.0*(t2 - t1)/CLOCKS_PER_SEC;
 
+	t1 = clock();
 	dgemm_row(A, B, C1, N);
+	t2 = clock();
+	T2 = 1.0*(t2 - t1)/CLOCKS_PER_SEC;
 
-	dgemm_col(A, B, C2, N);
+//	dgemm_col(A, B, C2, N);
 
 	printf(" Error of dgemm_row = %e \n", error(C1, exact, N*N));
-	printf(" Error of dgemm_col = %e \n", error(C2, exact, N*N));
+	printf(" Origin matrix multiplication dgemm times : %f \n", T1);
+	printf(" Blas level-3 matrix multiplication dgemm times : %f \n", T2);
+//	printf(" Error of dgemm_col = %e \n", error(C2, exact, N*N));
 
+	printf("\n");
 	return 0;
 }
 
@@ -95,6 +106,7 @@ void dgemm_row(double *A, double *B, double *C, int N)
 	cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, N, N, N, alpha, A, N, B, N, beta, C, N);
 }
 
+/*
 // C = alpha * op(A) * op(B) + beta * op(C)
 void dgemm_col(double *A, double *B, double *C, int N)
 {
@@ -103,4 +115,5 @@ void dgemm_col(double *A, double *B, double *C, int N)
 	beta = 0.0;
 	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, N, N, N, alpha, B, N, A, N, beta, C, N);
 }
+*/
 
