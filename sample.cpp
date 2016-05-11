@@ -29,11 +29,11 @@ int main()
 
 	initial(A, B, N);
 
-	t1 = clock();
+/*	t1 = clock();
 	matrix_multiplication(A, B, exact, N);
 	t2 = clock();
 	T1 = 1.0*(t2 - t1)/CLOCKS_PER_SEC;
-
+*/
 	t1 = clock();
 	dgemm_row(A, B, C1, N);
 	t2 = clock();
@@ -41,8 +41,8 @@ int main()
 
 //	dgemm_col(A, B, C2, N);
 
-	printf(" Error of dgemm_row = %e \n", error(C1, exact, N*N));
-	printf(" Origin matrix multiplication dgemm times : %f \n", T1);
+//	printf(" Error of dgemm_row = %e \n", error(C1, exact, N*N));
+//	printf(" Origin matrix multiplication dgemm times : %f \n", T1);
 	printf(" Blas level-3 matrix multiplication dgemm times : %f \n", T2);
 //	printf(" Error of dgemm_col = %e \n", error(C2, exact, N*N));
 
